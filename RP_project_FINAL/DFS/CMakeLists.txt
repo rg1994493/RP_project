@@ -1,0 +1,1 @@
+add_library(dfs dfs.cpp) #dfs is the name of the library

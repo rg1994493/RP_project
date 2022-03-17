@@ -1,0 +1,2 @@
+/usr/bin/ar qc libdfs.a  CMakeFiles/dfs.dir/dfs.cpp.o
+/usr/bin/ranlib libdfs.a

@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/RPSearch.dir/main.cpp.o  -o RPSearch   -L/home/juan/Documents/RP_project/DFS  -Wl,-rpath,/home/juan/Documents/RP_project/DFS DFS/libdfs.a 

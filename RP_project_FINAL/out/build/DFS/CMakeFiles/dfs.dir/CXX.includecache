@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/juan/Documents/RP_project/DFS/dfs.cpp
+dfs.h
+/home/juan/Documents/RP_project/DFS/dfs.h
+
+/home/juan/Documents/RP_project/DFS/dfs.h
+
