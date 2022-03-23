@@ -1,5 +1,3 @@
-#include<iostream>
-#include "dfs.h"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -9,6 +7,7 @@
 using namespace std;
 using IntVector=vector<int>; //Needs the std namespace
 using IntMatrix=vector<vector<int>>; //Needs the std namespace
+
 
 //******************************************************
 #define SIZE 10
@@ -113,6 +112,8 @@ class Node {
     Node(IntVector state, Node& _parent){
       this->state = state;
       this->parent = &_parent;
+      //cout << "node constructor" << state[0] << "," << state[1] <<endl;
+      //cout<< "parent constructor " << parent->state[0] << "," << parent->state[1] << endl;
     }
 
     IntVector getParentState(){
@@ -241,7 +242,7 @@ class Maze {
       int ytemp = 0;
       xtemp = obsArr[i][0];
       ytemp = obsArr[i][1];
-      mazeDraw[xtemp][ytemp] = "â–ˆ";
+      mazeDraw[xtemp][ytemp] = "█";
     }
 
     cout<<endl;
@@ -260,13 +261,13 @@ class Maze {
   IntMatrix neighbors(IntVector state){
     int row = state[0];
     int col = state[1]; 
-    cout<<"row"<<row<<"col"<<col<<endl; // ERASEEE  
+    cout<<"row"<<row<<"col"<<col<<endl; // BORRARRRRRR   
     IntMatrix adj;
     IntVector up = {row-1,col};
     IntVector down = {row+1,col};
     IntVector left = {row,col-1};
     IntVector right = {row,col+1};
-    if(row-1>=0) {adj.push_back(up); cout<<"UP"<<endl;} 
+    if(row-1>=0) {adj.push_back(up); cout<<"UP"<<endl;}
     if(row+1<height) {adj.push_back(down); cout<<"DOWN"<<endl;}
     if(col-1>=0) {adj.push_back(left); cout<<"LEFT"<<endl;}
     if(col+1<width) {adj.push_back(right); cout<<"RIGHT"<<endl;}
@@ -284,7 +285,95 @@ class Maze {
   }
 
   void solve(){
+    num_explored = 0;
+    Node s(startPos); //start Node
+    Stack<Node> frontier; // Stack just for DFS mode
+    frontier.push(s);
+        
+    IntMatrix explored; //explored nodes states to avoid repeat
+    IntMatrix cells; //To recover the solution after finding the path
+    Node node;
+    Node child;
+    
+    while(num_explored<5){
+      
+      if (frontier.isEmpty()){
+        throw std::invalid_argument(" No solution ");
+      }
+      cout<<endl;
+      cout<<"******************************************************************"<<endl;
+      cout<<"Nodes explored: "<<num_explored<<endl; // BORRARR
+
+      
+      //cout<< "Current node data2: " << node.getState()[0]<< ","<< node.getState()[1]<< endl;
+      //cout<< "Parent data2: " << node.getParentState()[0]<< "," << node.getParentState()[1] << endl;
+      
+
+      node = frontier.pop();
+                
+      //cout<<frontier.isEmpty()<<endl; //BORRARRR
+      
+      if(num_explored>1){
+      cout << "CURRENT after pop " << node.state[0] << "," << node.state[1] <<endl;
+      cout<< "PARENT after pop " << node.parent->state[0] << "," << node.parent->state[1] << endl;
+      }
+
+      num_explored += 1;
+
+      if (num_explored==11){
+        
+        cout<<"FOUND THE GOAL!"<<endl; //BORRARRRRR
+        
+        cells = {};
+        
+
+        while(false){ // TODO: Go back from goal to create the solution path
+          
+        }
+
+        //reverse(cells.begin(), cells.end());
+        //solution = cells;
+        cout<<"FOUND THE GOAL! 2"<<endl; //BORRARRRRR
+        break;
+        
+      }
+
+      explored.push_back(node.state); //add node to explored
+      cout<<"TEST_step passed"<<endl; //BORRARRRRR
+      //if it is not yet the solution check neighbors
+      IntMatrix v = neighbors(node.state);
+
+      for(auto i = v.begin() ; i!= v.end(); i++){
+        cout<<"Neighbors not empty"<<endl; //BORRARRRRR
+        bool exp = false;
+        for(auto j = explored.begin() ; j!= explored.end(); j++) {
+          if(*i == *j){ exp = true; cout<<" Esta en explored!!!!!!!!!!!"<<endl;break;} //BORRARRRRR
+        } 
+        if(exp == false){
+          bool front = false;
+          for(int j = 0; j< frontier.topPos() ; j++){
+            if (frontier.get(j).state == *i) {front = true; cout<<" Esta en frontier!!!!!!!!!!!"<<endl;break;} //BORRARRRRR 
+          }
+          if(front == false) {
+            cout<<" NO esta en frontier !!!!!!!!!!!"<<endl; //BORRARRRRR
             
+            Node child(*i,node);
+            
+            //cout<< "Current node data: CHILD  " << child.state[0] << "," << child.state[1] << endl;
+            //cout<< "Parent data: CHILD " << child.parent->state[0] << "," << child.parent->state[1] << endl;
+            //cout<< "Current node data: NODE  " << node.state[0] << "," << node.state[1] << endl;
+            //if(num_explored>1) cout<< "Parent data: NODE " << node.parent->state[0] << "," << node.parent->state[1] << endl;
+            frontier.push(child);
+            //cout<< "Current node data CHILD after push" << frontier.topElement().getState()[0]<< "," << frontier.topElement().getState()[1] << endl;
+            //cout<< "Parent data NODE after push " << node.getState()[0]<< "," << node.getState()[1] << endl;
+            if(num_explored>1) cout<< "Parent data NODE PARENT after push " << node.getParentState()[0]<< "," << node.getParentState()[1] << endl;                        
+          } 
+
+        }          
+        
+      }
+            
+    }
   }
   
 };
@@ -295,9 +384,13 @@ string file = argv [1];
 Maze maze1;
 maze1.init(file);
 maze1.print();
+maze1.solve();
+
 
 return 0;
 }
+
+
 
 
 
