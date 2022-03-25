@@ -8,6 +8,7 @@ using namespace std;
 using IntVector=vector<int>; //Needs the std namespace
 using IntMatrix=vector<vector<int>>; //Needs the std namespace
 
+//TODO AÑADIR METODOS EN LAS CLASESS
 
 //******************************************************
 #define SIZE 10
@@ -68,11 +69,11 @@ template <class T> bool Stack<T>::isFull(){
  
 template <class T> T Stack<T>::pop(){
     // Initialising a variable to store popped element
-    T popped_element = st[top];
- 
+    T pop_element = st[top];
     // Decreasing the top as element is getting out from the stack
     top--;
-    return popped_element;
+    return pop_element;
+    
 }
  
 template <class T> T Stack<T>::topElement(){
@@ -93,56 +94,58 @@ template <class T> T Stack<T>::get( int pos ){
 
 //******************************************************
 
-class Node {
-    public:
-    Node(){
-     this->state = {};
-     this->parent = nullptr; // Pointer initialized with null
-     cout<<"NULL CONSTRUCTOR"<<endl;
-     
-    }
+class Node {       
+  public:
+  IntVector state;
+  Node* parent;  
 
-    Node(IntVector state){
-     this->state = state;
-     this->parent = nullptr; // Pointer initialized with null
-     cout << "node constructor" << state[0] << "," << state[1] <<endl;
-     
-    }
-
-    Node(IntVector state, Node& _parent){
-      this->state = state;
-      this->parent = &_parent;
-      //cout << "node constructor" << state[0] << "," << state[1] <<endl;
-      //cout<< "parent constructor " << parent->state[0] << "," << parent->state[1] << endl;
-    }
-
-    IntVector getParentState(){
-      return parent->state;
-    }
-
-    IntVector getState(){
-      return state;
-    }
-
-    Node getParentNode(){
-      return *parent;
-    }
-
-    //op =, deep copy
-    Node& operator =(const Node& other) {
-      this->state = other.state;
-      this->parent = other.parent;
-    return *this;
-    }
-       
-    public:
-    IntVector state;
-    Node* parent;
+  public:
   
+  Node(){
+  this->state={};
+  this->parent = NULL;
+  }
+
+  Node(IntVector _state){
+  this->state = _state;
+  this->parent = NULL;
+  //cout << "node constructor" << state[0] << "," << state[1] <<endl;
+  }
+
+  Node(IntVector _state, Node** _parent){
+  this->parent = *_parent;
+  this->state = _state;
+  return;
+  //cout << "node constructor" << state[0] << "," << state[1] <<endl;
+  //cout<< "parent constructor " << parent->state[0] << "," << parent->state[1] << endl;
+  }
+
+  Node (const Node& n){
+    this->parent = n.parent;
+    this->state = n.state;
+  }
+
+  void setNode(IntVector _state, Node** _parent){
+    this->parent = *_parent;
+    this->state = _state;
+  }
+
+
+  /*
+  //op =, deep copy
+  Node operator =(const Node* other) {
+  this->state = other->state;
+  this->parent = other->parent;  
+  return *this;
+  }
+  */
+  
+
 };
 
+
 //******************************************************
-class Maze {
+struct Maze {
 
   public:
     int width = 0; 
@@ -286,16 +289,22 @@ class Maze {
 
   void solve(){
     num_explored = 0;
-    Node s(startPos); //start Node
+    cout<<"TEST 2;"<<endl;
+    Node* aux = new Node({0,0});
+    Node* s = new Node(startPos,&aux);
+    Node* node = new Node({0,0},&s);
+    Node* child = new Node({0,0},&s);
+    
+    cout<<"TEST 3;"<<endl; 
     Stack<Node> frontier; // Stack just for DFS mode
-    frontier.push(s);
-        
+    frontier.push(*s);
+    cout<<"TEST 4;"<<endl; 
     IntMatrix explored; //explored nodes states to avoid repeat
     IntMatrix cells; //To recover the solution after finding the path
-    Node node;
-    Node child;
     
-    while(num_explored<5){
+    cout<<"TEST 1;"<<endl;
+    
+    while(true){
       
       if (frontier.isEmpty()){
         throw std::invalid_argument(" No solution ");
@@ -304,47 +313,51 @@ class Maze {
       cout<<"******************************************************************"<<endl;
       cout<<"Nodes explored: "<<num_explored<<endl; // BORRARR
 
-      
-      //cout<< "Current node data2: " << node.getState()[0]<< ","<< node.getState()[1]<< endl;
-      //cout<< "Parent data2: " << node.getParentState()[0]<< "," << node.getParentState()[1] << endl;
-      
+      cout<<"node before popo "<<node->state[0]<<"."<<node->state[1]<<endl;
+      cout<<"node parent before pop "<<node->parent->state[0]<<"."<<node->parent->state[1]<<endl;
 
-      node = frontier.pop();
-                
+      cout<<"TEST6"<<endl;
+      cout<< "Current node data NODE CHILD after push" << frontier.topElement().state[0]<< "," << frontier.topElement().state[1] << endl;
+      cout<< "Current node data NODE PARENT after push" << frontier.topElement().parent->state[0]<< "," << frontier.topElement().parent->state[1] << endl;
+      node = new Node(frontier.pop());
+      
+      cout<<"TEST7"<<endl;       
       //cout<<frontier.isEmpty()<<endl; //BORRARRR
-      
-      if(num_explored>1){
-      cout << "CURRENT after pop " << node.state[0] << "," << node.state[1] <<endl;
-      cout<< "PARENT after pop " << node.parent->state[0] << "," << node.parent->state[1] << endl;
-      }
 
+      cout<<"node after pop"<<node->state[0]<<"."<<node->state[1]<<endl;
+      cout<<"node parent after pop "<<node->parent->state[0]<<"."<<node->parent->state[1]<<endl;
+      
       num_explored += 1;
 
-      if (num_explored==11){
+      if (node->state == goalPos){
         
         cout<<"FOUND THE GOAL!"<<endl; //BORRARRRRR
         
         cells = {};
-        
+        int t = 0;
 
-        while(false){ // TODO: Go back from goal to create the solution path
-          
+        while(node->parent != NULL){
+          cout<< "NODE: "<< node->state[0]<<","<< node->state[1] << endl;
+          cout<< "NODE PARENT: "<< node->parent->state[0]<<","<< node->parent->state[1] << endl;
+          node = node->parent;
+          cells.push_back(node->state);
+          t++;
         }
 
-        //reverse(cells.begin(), cells.end());
-        //solution = cells;
+        reverse(cells.begin(), cells.end());
+        solution = cells;
         cout<<"FOUND THE GOAL! 2"<<endl; //BORRARRRRR
-        break;
+        return;
         
       }
 
-      explored.push_back(node.state); //add node to explored
-      cout<<"TEST_step passed"<<endl; //BORRARRRRR
+      explored.push_back(node->state); //add node to explored
+      
       //if it is not yet the solution check neighbors
-      IntMatrix v = neighbors(node.state);
+      IntMatrix v = neighbors(node->state);
 
       for(auto i = v.begin() ; i!= v.end(); i++){
-        cout<<"Neighbors not empty"<<endl; //BORRARRRRR
+        
         bool exp = false;
         for(auto j = explored.begin() ; j!= explored.end(); j++) {
           if(*i == *j){ exp = true; cout<<" Esta en explored!!!!!!!!!!!"<<endl;break;} //BORRARRRRR
@@ -356,17 +369,19 @@ class Maze {
           }
           if(front == false) {
             cout<<" NO esta en frontier !!!!!!!!!!!"<<endl; //BORRARRRRR
-            
-            Node child(*i,node);
-            
-            //cout<< "Current node data: CHILD  " << child.state[0] << "," << child.state[1] << endl;
-            //cout<< "Parent data: CHILD " << child.parent->state[0] << "," << child.parent->state[1] << endl;
+            cout<< "NODE " << node->state[0]<< "," << node->state[1] << endl;
+            cout<< "NODE PARENT " << node->parent->state[0]<< "," << node->parent->state[1] << endl;
+            child->setNode(*i,&node);
+             
+            cout<< "Current node data: CHILD  " << child->state[0] << "," << child->state[1] << endl;
+            cout<< "Parent data: CHILD " << child->parent->state[0] << "," << child->parent->state[1] << endl;
             //cout<< "Current node data: NODE  " << node.state[0] << "," << node.state[1] << endl;
             //if(num_explored>1) cout<< "Parent data: NODE " << node.parent->state[0] << "," << node.parent->state[1] << endl;
-            frontier.push(child);
-            //cout<< "Current node data CHILD after push" << frontier.topElement().getState()[0]<< "," << frontier.topElement().getState()[1] << endl;
-            //cout<< "Parent data NODE after push " << node.getState()[0]<< "," << node.getState()[1] << endl;
-            if(num_explored>1) cout<< "Parent data NODE PARENT after push " << node.getParentState()[0]<< "," << node.getParentState()[1] << endl;                        
+            frontier.push(*child);
+            cout<< "Current node data NODE CHILD after push" << frontier.topElement().state[0]<< "," << frontier.topElement().state[1] << endl;
+            cout<< "Current node data NODE PARENT after push" << frontier.topElement().parent->state[0]<< "," << frontier.topElement().parent->state[1] << endl;
+            cout<< "NODE after push " << node->state[0]<< "," << node->state[1] << endl;
+            cout<< "NODE PARENT after push " << node->parent->state[0]<< "," << node->parent->state[1] << endl;                        
           } 
 
         }          
@@ -389,6 +404,7 @@ maze1.solve();
 
 return 0;
 }
+
 
 
 
