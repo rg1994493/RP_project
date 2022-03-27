@@ -10,7 +10,7 @@ Specifics:
 - Use of std library for vector and matrix
 
 General idea of the program:
-- Save a .txt file with a maze shape (see example below) that will work as input for the C++ program
+- Save a .txt file with a maze shape that will work as input for the C++ program
   Maze characteristics:
    A - Starting point
    B - Goal Point
