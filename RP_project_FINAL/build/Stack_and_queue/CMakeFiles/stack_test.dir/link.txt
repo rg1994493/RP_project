@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3 -DNDEBUG   CMakeFiles/stack_test.dir/stack_test.cpp.o  -o stack_test 

@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/juan/Documents/RP_project_FINAL/src/Stack_and_queue/stack.h
+iostream
+-
+
+/home/juan/Documents/RP_project_FINAL/src/Stack_and_queue/stack_test.cpp
+iostream
+-
+stack.h
+/home/juan/Documents/RP_project_FINAL/src/Stack_and_queue/stack.h
+

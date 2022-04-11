@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3 -DNDEBUG   CMakeFiles/maze_solver.dir/main.cpp.o  -o maze_solver 
